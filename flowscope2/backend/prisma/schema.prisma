@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  automations  Automation[]
+}
+model Automation {
+  id             String              @id @default(uuid())
+  automationName String
+  automationUrl  String?
+  toolName       String
+  owner          String
+  trigger        Json
+  actions        Json
+  dependencies   String[]
+  status         AutomationStatus    @default(ACTIVE)
+  lastRun        DateTime?
+  failureRate    Float               @default(0)
+  executionCount Int                 @default(0)
+  avgDuration    Float               @default(0)
+  estimatedCost  Float               @default(0)
+  tags           String[]
+  description    String?
+  userId         String
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions       AutomationVersion[]
+  healthLogs     HealthLog[]
+  aiInsights     AiInsight[]
+}
+model AutomationVersion {
+  id            String     @id @default(uuid())
+  automationId  String
+  version       Int
+  snapshot      Json
+  changeSummary String?
+  createdAt     DateTime   @default(now())
+  automation    Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+}
+model HealthLog {
+  id           String      @id @default(uuid())
+  automationId String
+  status       HealthStatus
+  duration     Float?
+  errorMessage String?
+  metadata     Json?
+  createdAt    DateTime    @default(now())
+  automation   Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+}
+model AiInsight {
+  id           String      @id @default(uuid())
+  automationId String?
+  insightType  InsightType
+  title        String
+  description  String
+  severity     Severity    @default(INFO)
+  metadata     Json?
+  dismissed    Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  automation   Automation? @relation(fields: [automationId], references: [id], onDelete: SetNull)
+}
+enum AutomationStatus {
+  ACTIVE
+  INACTIVE
+  FAILED
+  PAUSED
+}
+
+enum HealthStatus {
+  SUCCESS
+  FAILURE
+  TIMEOUT
+  SKIPPED
+}
+
+enum InsightType {
+  DUPLICATE
+  ORPHAN
+  BOTTLENECK
+  COST
+  DEPENDENCY_RISK
+  PERFORMANCE
+}
+
+enum Severity {
+  INFO
+  WARNING
+  CRITICAL
+}
