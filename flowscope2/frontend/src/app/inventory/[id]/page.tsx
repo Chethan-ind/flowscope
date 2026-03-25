@@ -54,7 +54,7 @@ export default function AutoDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {auto.automationUrl && (
+            {Boolean(auto.automationUrl) && (
               <a href={String(auto.automationUrl)} target="_blank" rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105"
                 style={{ background: 'rgba(74,79,245,0.15)', border: '1px solid rgba(74,79,245,0.2)', color: '#a5bbff', fontFamily: 'Syne,sans-serif' }}>
@@ -87,7 +87,7 @@ export default function AutoDetailPage() {
         <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           {tab === 'overview' && (
             <div className="glass rounded-2xl p-6 space-y-6">
-              {auto.description && <div><h3 className="text-xs uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Syne,sans-serif' }}>Description</h3><p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>{String(auto.description)}</p></div>}
+              {Boolean(auto.description) && <div><h3 className="text-xs uppercase tracking-wider mb-2" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Syne,sans-serif' }}>Description</h3><p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>{String(auto.description)}</p></div>}
               <div><h3 className="text-xs uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Syne,sans-serif' }}>Trigger</h3><pre className="rounded-xl p-4 text-xs overflow-auto" style={{ background: '#13132b', color: '#a5bbff', fontFamily: 'JetBrains Mono,monospace' }}>{JSON.stringify(auto.trigger, null, 2)}</pre></div>
               <div><h3 className="text-xs uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Syne,sans-serif' }}>Actions</h3><pre className="rounded-xl p-4 text-xs overflow-auto" style={{ background: '#13132b', color: '#86efac', fontFamily: 'JetBrains Mono,monospace' }}>{JSON.stringify(auto.actions, null, 2)}</pre></div>
             </div>
@@ -116,10 +116,10 @@ export default function AutoDetailPage() {
                     <div className="flex items-center gap-3">
                       <span className="w-2 h-2 rounded-full" style={{ background: log.status === 'SUCCESS' ? '#4ade80' : '#f87171' }} />
                       <span className="text-sm" style={{ color: log.status === 'SUCCESS' ? '#4ade80' : '#f87171' }}>{String(log.status)}</span>
-                      {log.errorMessage && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{String(log.errorMessage)}</span>}
+                      {Boolean(log.errorMessage) && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{String(log.errorMessage)}</span>}
                     </div>
                     <div className="flex items-center gap-4 text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      {log.duration && <span>{Number(log.duration).toFixed(0)}ms</span>}
+                      {Boolean(log.duration) && <span>{Number(log.duration).toFixed(0)}ms</span>}
                       <span>{new Date(String(log.createdAt)).toLocaleString()}</span>
                     </div>
                   </div>
